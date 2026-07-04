@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Calculadora de Humanización Indirecta – TClamp</title>
+  <style>
+    :root{--bg:#07111f;--panel:#101d2e;--panel2:#0b1726;--text:#eef6ff;--muted:#9db0c8;--line:#263a50;--cyan:#34d6e8;--blue:#63a9ff;--green:#45d483;--yellow:#ffd166;--red:#ff7373;--input:#173623}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#102b43 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+    .wrap{max-width:1180px;margin:auto;padding:28px 18px 46px}.hero{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:18px}.eyebrow{color:var(--cyan);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px}h1{font-size:clamp(25px,4vw,42px);line-height:1.1;margin:7px 0}.lead{color:var(--muted);max-width:760px;margin:0}.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+    button{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#06101c}button.secondary{background:#17283a;color:var(--text);border:1px solid var(--line)}button:focus-visible,input:focus-visible{outline:3px solid rgba(52,214,232,.38);outline-offset:2px}
+    .layout{display:grid;grid-template-columns:minmax(320px,.85fr) minmax(420px,1.15fr);gap:16px}.card{background:linear-gradient(180deg,rgba(255,255,255,.025),transparent),var(--panel);border:1px solid var(--line);border-radius:17px;padding:19px;box-shadow:0 18px 50px rgba(0,0,0,.2)}h2{font-size:18px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+    .fields{display:grid;gap:11px}.field{display:grid;grid-template-columns:minmax(0,1fr) 150px;align-items:center;gap:12px;padding:10px 12px;border:1px solid #294335;border-radius:12px;background:rgba(23,54,35,.38)}label{font-weight:650}.help{display:block;color:var(--muted);font-size:11px;font-weight:400;margin-top:2px}input,select{width:100%;border:1px solid #3e7352;border-radius:9px;background:var(--input);color:#fff;padding:10px 11px;font-size:16px;text-align:right;font-variant-numeric:tabular-nums}input.invalid,select.invalid{border-color:var(--red);background:#351c24}.status{min-height:22px;margin-top:12px;color:var(--muted);font-size:13px}.status.error{color:#ffb1b1}.status.ok{color:#91efb5}
+    .index{display:grid;grid-template-columns:1fr auto;gap:15px;align-items:center;padding:18px;border-radius:14px;background:linear-gradient(120deg,#143049,#112235);border:1px solid #345371}.index-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}.index-value{font-size:clamp(42px,7vw,70px);font-weight:850;line-height:1;font-variant-numeric:tabular-nums}.badge{padding:8px 13px;border-radius:999px;font-weight:800;border:1px solid currentColor}.excellent{color:#89f0ad;background:#173927}.high{color:#8edcf9;background:#143649}.moderate{color:#ffe094;background:#463a19}.low{color:#ffaaaa;background:#451d27}.undefined{color:#d0b5ff;background:#302346}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:11px}.metric{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;min-height:90px}.metric-name{color:var(--muted);font-size:11px;min-height:32px}.metric-value{font-size:23px;font-weight:800;font-variant-numeric:tabular-nums}.metric-unit{font-size:11px;color:var(--muted)}
+    details{margin-top:16px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);padding:12px 14px}summary{cursor:pointer;font-weight:750}.formula-list{display:grid;gap:7px;margin-top:12px;color:var(--muted);font-size:13px}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#cbe7ff}.note{margin-top:13px;padding:10px 12px;border-left:3px solid var(--yellow);background:#2c2817;color:#f6e7ad;font-size:12px}.story{margin-top:16px;background:#0b1726;border:1px solid var(--line);border-radius:14px;padding:15px;color:#d7e7f7}.footer{color:var(--muted);font-size:11px;margin-top:15px;text-align:center}
+    @media(max-width:880px){.hero{display:block}.actions{justify-content:flex-start;margin-top:15px}.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.wrap{padding:18px 11px 35px}.field{grid-template-columns:1fr}.field input{text-align:left}.metrics{grid-template-columns:1fr}.index{grid-template-columns:1fr}}
+    @media print{body{background:white;color:#111}.wrap{max-width:none;padding:0}.hero,.layout{display:block}.actions,.status{display:none}.card,.metric,.index,.story,details{background:white;color:#111;box-shadow:none;border-color:#bbb;margin-bottom:12px}.lead,.sub,.help,.metric-name,.metric-unit,.formula-list{color:#444}input{border:0;background:white;color:#111}.badge{background:white}.footer{color:#444}}
+  </style>
+  <style>
+    :root{--bg:#eef3f8;--panel:#ffffff;--panel2:#f6f8fb;--text:#213044;--muted:#66758a;--line:#dbe3ec;--cyan:#1677c8;--blue:#2764b5;--green:#2f9e67;--yellow:#e9a23b;--red:#d14b55;--input:#eaf8ef}
+    body{background:linear-gradient(145deg,#f9fbfd 0,#eaf1f8 48%,#f4f7fa 100%);color:var(--text)}
+    .hero{background:linear-gradient(135deg,#ffffff 0,#edf6ff 100%);border:1px solid #d7e4f1;border-radius:22px;padding:24px;box-shadow:0 16px 40px rgba(42,75,110,.09)}
+    .eyebrow{color:#1769aa}.lead,.sub,.help,.metric-name,.metric-unit,.index-label,.footer{color:var(--muted)}
+    button{background:linear-gradient(135deg,#1684d6,#245da9);color:white;box-shadow:0 5px 14px rgba(35,102,169,.2)}button.secondary{background:white;color:#36516d;border-color:#cbd7e4;box-shadow:none}
+    .card{background:white;border-color:#dbe4ed;box-shadow:0 14px 35px rgba(47,72,99,.08)}
+    .field{background:linear-gradient(90deg,#f5fcf7,#edf9f1);border-color:#cbe8d5}.field:hover{border-color:#78bd93}.field label{color:#244335}
+    input,select{background:white;color:#173025;border:1.5px solid #86c69e;box-shadow:inset 0 1px 2px rgba(20,80,45,.05)}select{text-align:left;cursor:pointer}input.invalid,select.invalid{background:#fff1f2;color:#512229}
+    .index{background:linear-gradient(135deg,#edf6ff,#f7fbff);border-color:#bfd7ed}.index-value{color:#165f9f}
+    .metric{background:#f7f9fc;border-color:#dde5ee}.metric-value{color:#245f98}
+    details,.story{background:white;color:var(--text);border-color:#dce5ee}.story{background:#f3f8fd;border-left:4px solid #2a78b8}
+    .formula{color:#155e99}.note{background:#fff8e8;color:#6e551f;border-color:#e7ab43}
+    .chart{margin-top:15px;padding:16px;border:1px solid #dbe5ef;border-radius:14px;background:#f9fbfd}.chart-title{font-weight:800;margin-bottom:12px}.bar-row{display:grid;grid-template-columns:115px 1fr 55px;gap:10px;align-items:center;margin:10px 0}.track{height:18px;border-radius:999px;background:#e3e9f0;overflow:hidden}.bar{height:100%;width:0;border-radius:inherit;transition:width .35s ease}.bar-ree{background:linear-gradient(90deg,#49a978,#72c99a)}.bar-ih{background:linear-gradient(90deg,#2385cb,#58a7dd)}.bar-number{text-align:right;font-weight:800;color:#35516e}
+    .method{margin-top:16px;background:linear-gradient(135deg,#1e5f98,#2c78b5);color:white;border-radius:18px;padding:22px;box-shadow:0 14px 30px rgba(31,94,150,.18)}.method h2{font-size:22px}.method p{color:#edf7ff}.weights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.weight{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:13px;padding:14px}.weight strong{font-size:25px;display:block}.method-formula{background:white;color:#174d78;padding:14px;border-radius:12px;text-align:center;font:700 15px ui-monospace,SFMono-Regular,monospace}
+    .legend{margin-top:16px}.legend-head{margin-bottom:14px}.legend-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.legend-item{border:1px solid #dce5ed;border-radius:14px;padding:15px;background:#fff}.legend-item.input{border-left:5px solid #49aa73;background:#f7fcf9}.legend-item.output{border-left:5px solid #438bc2}.legend-item h3{margin:0 0 5px;font-size:15px;color:#24425e}.legend-item p{margin:0;color:#627287;font-size:13px}.legend-item .tip{display:block;margin-top:7px;color:#2d6c4b;font-weight:650;font-size:12px}.legend-section-title{grid-column:1/-1;margin:12px 0 0;padding:9px 12px;border-radius:10px;background:#edf3f8;color:#315775;font-weight:800}
+    @media(max-width:700px){.legend-grid,.weights{grid-template-columns:1fr}.bar-row{grid-template-columns:90px 1fr 48px}}
+    @media print{.hero,.card,.method,.legend-item,.chart{box-shadow:none}.method{background:white;color:#111;border:1px solid #bbb}.method p{color:#333}.method-formula{border:1px solid #bbb}.legend-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <div><div class="eyebrow">TClamp</div><h1>Calculadora de Humanización Indirecta</h1></div>
+    <div class="actions"><button id="calculate" type="button">Calcular resultados</button><button id="demo" class="secondary" type="button">Valores del Excel</button><button id="clear" class="secondary" type="button">Limpiar</button><button id="print" class="secondary" type="button">Imprimir / PDF</button></div>
+  </header>
+
+  <div class="layout">
+    <section class="card" aria-labelledby="inputs-title">
+      <h2 id="inputs-title">Entradas</h2><div class="sub">Escribe en los campos verdes. Se aceptan comas o puntos decimales.</div>
+      <div class="fields">
+        <div class="field"><label for="nTotal">N_total<span class="help">Transportes realizados con TClamp</span></label><input id="nTotal" inputmode="numeric" value="300"></div>
+        <div class="field"><label for="nProcessed">N_procesadas<span class="help">Muestras que llegaron a procesarse</span></label><input id="nProcessed" inputmode="numeric" value="181"></div>
+        <div class="field"><label for="tProcessed">TTR procesadas<span class="help">Mediana, en minutos</span></label><input id="tProcessed" inputmode="decimal" value="40"></div>
+        <div class="field"><label for="tFailed">TTR no procesadas estimado<span class="help">Selecciona el escenario asistencial</span></label><select id="tFailed"><option value="60">Optimista · 60 min</option><option value="70" selected>Realista · 70 min</option><option value="85">Conservador · 85 min</option></select></div>
+        <div class="field"><label for="kActs">k actos por reextracción<span class="help">Excel recomienda 2</span></label><input id="kActs" inputmode="decimal" value="2"></div>
+        <div class="field"><label for="timeThreshold">Umbral de tiempo<span class="help">Normalización en minutos</span></label><input id="timeThreshold" inputmode="decimal" value="120"></div>
+        <div class="field"><label for="actsThreshold">Umbral de actos / 100<span class="help">Normalización de la escala</span></label><input id="actsThreshold" inputmode="decimal" value="100"></div>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card" aria-labelledby="results-title">
+      <h2 id="results-title">Resultados</h2><div class="sub">Se recalculan con cada cambio.</div>
+      <div class="index"><div><div class="index-label">Índice de Humanización</div><div class="index-value"><span id="ih">—</span><small style="font-size:.28em;color:var(--muted)"> / 100</small></div></div><div id="category" class="badge undefined">—</div></div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-name">N_no_procesadas</div><div id="nonProcessed" class="metric-value">—</div><div class="metric-unit">muestras</div></div>
+        <div class="metric"><div class="metric-name">TRP</div><div id="trp" class="metric-value">—</div><div class="metric-unit">%</div></div>
+        <div class="metric"><div class="metric-name">REE por 100</div><div id="ree" class="metric-value">—</div><div class="metric-unit">por 100 transportes</div></div>
+        <div class="metric"><div class="metric-name">ΔT</div><div id="deltaT" class="metric-value">—</div><div class="metric-unit">minutos</div></div>
+        <div class="metric"><div class="metric-name">Tiempo de incertidumbre evitado</div><div id="timeAvoided" class="metric-value">—</div><div class="metric-unit">min / 100 transportes</div></div>
+        <div class="metric"><div class="metric-name">Actos asistenciales evitados</div><div id="actsAvoided" class="metric-value">—</div><div class="metric-unit">por 100 transportes</div></div>
+        <div class="metric"><div class="metric-name">S_tiempo</div><div id="sTime" class="metric-value">—</div><div class="metric-unit">0–100</div></div>
+        <div class="metric"><div class="metric-name">S_actos</div><div id="sActs" class="metric-value">—</div><div class="metric-unit">0–100</div></div>
+      </div>
+      <div id="story" class="story">Introduce valores válidos para generar la interpretación.</div>
+      <div class="chart" role="img" aria-label="Comparación entre REE por 100 e Índice de Humanización">
+        <div class="chart-title">Comparación de resultados</div>
+        <div class="bar-row"><span>REE / 100</span><div class="track"><div id="barRee" class="bar bar-ree"></div></div><span id="barReeValue" class="bar-number">—</span></div>
+        <div class="bar-row"><span>IH</span><div class="track"><div id="barIh" class="bar bar-ih"></div></div><span id="barIhValue" class="bar-number">—</span></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="method">
+    <h2>¿De dónde sale el Índice de Humanización Indirecta?</h2>
+    <p>El índice no mide directamente la percepción emocional del paciente. Estima la humanización que aporta un circuito más seguro y eficiente mediante tres efectos: evitar un nuevo pinchazo, reducir la incertidumbre diagnóstica y disminuir actos asistenciales innecesarios.</p>
+    <div class="weights">
+      <div class="weight"><strong>50 %</strong>Reextracciones evitadas (REE): impacto directo sobre el paciente.</div>
+      <div class="weight"><strong>30 %</strong>Tiempo evitado normalizado: menos espera e incertidumbre.</div>
+      <div class="weight"><strong>20 %</strong>Actos evitados normalizados: menor carga clínica innecesaria.</div>
+    </div>
+    <div class="method-formula">IH = 0,5 × REE_por_100 + 0,3 × S_tiempo + 0,2 × S_actos</div>
+  </section>
+
+  <details><summary>Fórmulas reproducidas del Excel</summary><div class="formula-list">
+    <div><span class="formula">N_no_procesadas = N_total − N_procesadas</span></div>
+    <div><span class="formula">TRP = N_no_procesadas / N_total × 100</span></div>
+    <div><span class="formula">REE = 100 − TRP</span></div>
+    <div><span class="formula">ΔT = TTR_no_procesadas − TTR_procesadas</span></div>
+    <div><span class="formula">Tiempo evitado = ΔT × (REE / 100)</span></div>
+    <div><span class="formula">Actos evitados = k × (REE / 100) × 100</span></div>
+    <div><span class="formula">S_tiempo = min(100, 100 × Tiempo evitado / Umbral_tiempo)</span></div>
+    <div><span class="formula">S_actos = min(100, 100 × Actos evitados / Umbral_actos)</span></div>
+    <div><span class="formula">IH = 0,5 × REE + 0,3 × S_tiempo + 0,2 × S_actos</span></div>
+  </div><div class="note">Categorías del Excel actualizado: Bajo 0–39, Moderado 40–69, Alto 70–84 y Excelente ≥85.</div></details>
+
+  <section class="card legend">
+    <div class="legend-head"><h2>Leyenda de campos</h2><div class="sub">Qué debes introducir y qué calcula automáticamente la herramienta.</div></div>
+    <div class="legend-grid">
+      <div class="legend-section-title">Entradas manuales · campos verdes</div>
+      <article class="legend-item input"><h3>N_total</h3><p>Número total de muestras transportadas al hospital usando TClamp dentro de la muestra estudiada.</p></article>
+      <article class="legend-item input"><h3>N_procesadas</h3><p>Número de esas muestras aceptadas y procesadas correctamente por el laboratorio.</p></article>
+      <article class="legend-item input"><h3>TTR_procesadas_min (mediana)</h3><p>Minutos habituales desde la extracción hasta la validación de una muestra procesada.</p><span class="tip">Refleja la rapidez del circuito cuando todo va bien.</span></article>
+      <article class="legend-item input"><h3>TTR_no_procesadas_estimado_min</h3><p>Tiempo estimado hasta rechazo, nueva extracción, nuevo transporte y nueva validación.</p><span class="tip">Selector del Excel: Optimista 60 min · Realista 70 min · Conservador 85 min.</span></article>
+      <article class="legend-item input"><h3>k_actos_por_reextracción</h3><p>Actos asistenciales adicionales provocados por una muestra inválida.</p><span class="tip">Recomendado: 2 (repinchazo + nuevo transporte). Usa 3 si hay pasos adicionales.</span></article>
+      <article class="legend-item input"><h3>Umbral_tiempo_min</h3><p>Valor máximo usado para convertir el tiempo evitado en una escala de 0 a 100.</p><span class="tip">Ejemplo: 1440 minutos (24 h) equivalen a 100 puntos.</span></article>
+      <article class="legend-item input"><h3>Umbral_actos_por_100</h3><p>Número de actos evitados por 100 transportes que equivale al máximo de la escala.</p><span class="tip">Ejemplo: escribe 100 si 100 actos evitados representan el máximo.</span></article>
+
+      <div class="legend-section-title">Cálculos automáticos</div>
+      <article class="legend-item output"><h3>N_no_procesadas</h3><p>N_total − N_procesadas. Indica las muestras inválidas o rechazadas.</p></article>
+      <article class="legend-item output"><h3>TRP_%</h3><p>Tasa de Reextracción Potencial: porcentaje de muestras no procesadas respecto al total.</p></article>
+      <article class="legend-item output"><h3>REE_por_100</h3><p>100 − TRP. Pacientes de cada 100 que evitaron potencialmente un nuevo pinchazo.</p></article>
+      <article class="legend-item output"><h3>ΔT_min</h3><p>TTR no procesadas estimado − TTR procesadas. Tiempo extra evitado cuando la muestra llega válida.</p></article>
+      <article class="legend-item output"><h3>Tiempo de incertidumbre evitado</h3><p>ΔT × (REE / 100). Minutos de espera o inseguridad diagnóstica evitados en promedio.</p></article>
+      <article class="legend-item output"><h3>Actos asistenciales evitados / 100</h3><p>k × REE_por_100. Actos clínicos innecesarios potencialmente evitados por cada 100 transportes.</p></article>
+      <article class="legend-item output"><h3>S_tiempo</h3><p>Normaliza el tiempo evitado en una escala 0–100 usando el umbral de tiempo.</p></article>
+      <article class="legend-item output"><h3>S_actos</h3><p>Normaliza los actos evitados en una escala 0–100 usando el umbral de actos.</p></article>
+    </div>
+  </section>
+  <div class="footer">Herramienta metodológica basada en indicadores indirectos; no sustituye una valoración clínica ni una medida directa de dolor o ansiedad.<br><strong>CC · Autoría: Ángela Jiménez García y Pedro Jesús Milla Ortega</strong></div>
+</main>
+
+<script>
+  function calculateMetrics(v){
+    var nonProcessed=v.nTotal-v.nProcessed;
+    var trp=v.nTotal===0?0:(nonProcessed/v.nTotal)*100;
+    var ree=100-trp;
+    var deltaT=v.tFailed-v.tProcessed;
+    var timeAvoided=deltaT*(ree/100);
+    var actsAvoided=v.kActs*(ree/100)*100;
+    var sTime=Math.min(100,100*timeAvoided/v.timeThreshold);
+    var sActs=Math.min(100,100*actsAvoided/v.actsThreshold);
+    var ih=.5*ree+.3*sTime+.2*sActs;
+    return {nonProcessed:nonProcessed,trp:trp,ree:ree,deltaT:deltaT,timeAvoided:timeAvoided,actsAvoided:actsAvoided,sTime:sTime,sActs:sActs,ih:ih};
+  }
+  function parseLocalized(value){var text=String(value).replace(/^\s+|\s+$/g,'').replace(/\s/g,'').replace(',','.');return text===''?NaN:Number(text)}
+  function format(value,digits){var rounded;if(typeof digits==='undefined'){digits=1}rounded=Number(value).toFixed(digits);return rounded.replace('.',',')}
+  function isFiniteNumber(value){return typeof value==='number'&&isFinite(value)}
+  function isInteger(value){return isFiniteNumber(value)&&Math.floor(value)===value}
+  var ids=['nTotal','nProcessed','tProcessed','tFailed','kActs','timeThreshold','actsThreshold'];
+  var inputs={},i;
+  for(i=0;i<ids.length;i++){inputs[ids[i]]=document.getElementById(ids[i])}
+  var outputIds=['nonProcessed','trp','ree','deltaT','timeAvoided','actsAvoided','sTime','sActs','ih'];
+  var outputs={};
+  for(i=0;i<outputIds.length;i++){outputs[outputIds[i]]=document.getElementById(outputIds[i])}
+  var statusBox=document.getElementById('status'),category=document.getElementById('category'),story=document.getElementById('story');
+  var barRee=document.getElementById('barRee'),barIh=document.getElementById('barIh'),barReeValue=document.getElementById('barReeValue'),barIhValue=document.getElementById('barIhValue');
+  function resetOutputs(){for(var j=0;j<outputIds.length;j++){outputs[outputIds[j]].textContent='—'}category.textContent='—';category.className='badge undefined';story.textContent='Introduce valores válidos para generar la interpretación.';barRee.style.width='0%';barIh.style.width='0%';barReeValue.textContent='—';barIhValue.textContent='—'}
+  function classify(ih){if(ih>=85)return['Excelente','excellent'];if(ih>=70)return['Alto','high'];if(ih>=40)return['Moderado','moderate'];return['Bajo','low']}
+  function update(){
+    var j,key,v,r,resultClass,label,klass;
+    for(j=0;j<ids.length;j++){inputs[ids[j]].className=inputs[ids[j]].className.replace(/\s*invalid/g,'')}
+    v={nTotal:parseLocalized(inputs.nTotal.value),nProcessed:parseLocalized(inputs.nProcessed.value),tProcessed:parseLocalized(inputs.tProcessed.value),tFailed:parseLocalized(inputs.tFailed.value),kActs:parseLocalized(inputs.kActs.value),timeThreshold:parseLocalized(inputs.timeThreshold.value),actsThreshold:parseLocalized(inputs.actsThreshold.value)};
+    for(key in v){if(v.hasOwnProperty(key)&&!isFiniteNumber(v[key])){inputs[key].className+=' invalid';statusBox.textContent='Completa todos los campos con números válidos.';statusBox.className='status error';resetOutputs();return}}
+    if(!isInteger(v.nTotal)||!isInteger(v.nProcessed)){if(!isInteger(v.nTotal)){inputs.nTotal.className+=' invalid'}if(!isInteger(v.nProcessed)){inputs.nProcessed.className+=' invalid'}statusBox.textContent='N_total y N_procesadas deben ser números enteros.';statusBox.className='status error';resetOutputs();return}
+    if(v.nTotal<=0||v.nProcessed<0||v.nProcessed>v.nTotal||v.tProcessed<0||v.tFailed<0||v.kActs<0||v.timeThreshold<=0||v.actsThreshold<=0){statusBox.textContent='Revisa los valores: N_total y los umbrales deben ser mayores que cero; N_procesadas no puede superar N_total; no se admiten negativos.';statusBox.className='status error';resetOutputs();return}
+    r=calculateMetrics(v);for(key in r){if(r.hasOwnProperty(key)&&!isFiniteNumber(r[key])){statusBox.textContent='No se ha podido realizar el cálculo con estos valores.';statusBox.className='status error';resetOutputs();return}}
+    outputs.nonProcessed.textContent=format(r.nonProcessed,0);outputs.trp.textContent=format(r.trp);outputs.ree.textContent=format(r.ree);outputs.deltaT.textContent=format(r.deltaT);outputs.timeAvoided.textContent=format(r.timeAvoided);outputs.actsAvoided.textContent=format(r.actsAvoided);outputs.sTime.textContent=format(r.sTime);outputs.sActs.textContent=format(r.sActs);outputs.ih.textContent=format(r.ih);
+    resultClass=classify(r.ih);label=resultClass[0];klass=resultClass[1];category.textContent=label;category.className='badge '+klass;statusBox.textContent='Cálculo actualizado correctamente.';statusBox.className='status ok';
+    barRee.style.width=Math.max(0,Math.min(100,r.ree))+'%';barIh.style.width=Math.max(0,Math.min(100,r.ih))+'%';barReeValue.textContent=format(r.ree);barIhValue.textContent=format(r.ih);
+    story.textContent='Con TClamp, el '+format(r.ree)+' % de las muestras llegan y se solicitan sin reextracción, evitando aproximadamente '+format(r.actsAvoided)+' actos asistenciales por cada 100 transportes y ahorrando '+format(r.timeAvoided)+' minutos de incertidumbre por cada 100. El índice de humanización resultante es '+format(r.ih)+'/100 ('+label.toLowerCase()+'), con una diferencia temporal de '+format(r.deltaT)+' minutos.';
+  }
+  for(i=0;i<ids.length;i++){inputs[ids[i]].addEventListener('input',update);inputs[ids[i]].addEventListener('change',update)}
+  document.getElementById('calculate').addEventListener('click',update);
+  document.getElementById('demo').addEventListener('click',function(){var values=[300,181,40,70,2,120,100],j;for(j=0;j<ids.length;j++){inputs[ids[j]].value=values[j]}update()});
+  document.getElementById('clear').addEventListener('click',function(){var j;for(j=0;j<ids.length;j++){inputs[ids[j]].value=''}update();inputs.nTotal.focus()});
+  document.getElementById('print').addEventListener('click',function(){window.print()});
+  update();
+</script>
+</body>
+</html>
